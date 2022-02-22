@@ -35,6 +35,17 @@ exports.validatePost = () => {
   ];
 };
 
+//get single message
+exports.getSinglePost = async (req, res, next) => {
+  try {
+    const post = await postDb.findById(ObjectId(req.params.id));
+    res.json(post);
+  } catch (error) {
+    console.log(error);
+    next(error);
+  }
+};
+
 //allow deelting message is the user is an admin
 exports.deleteMessage = async (req, res, next) => {
   try {

@@ -14,7 +14,7 @@ router.post(
 );
 
 //GET single post
-router.get("/:id");
+router.get("/:id", commentController.getSinglePost);
 
 //PUT edit post
 router.put("/:id/edit");
