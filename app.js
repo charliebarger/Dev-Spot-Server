@@ -1,17 +1,23 @@
+require("dotenv").config();
+require("./server/models/database");
 var createError = require("http-errors");
 var express = require("express");
 var path = require("path");
 var cookieParser = require("cookie-parser");
 var logger = require("morgan");
-
 const postRouter = require("./server/routes/posts");
 const userRouter = require("./server/routes/users");
 var app = express();
+
+var multer = require("multer");
+var upload = multer();
 
 app.use(logger("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
+
+app.use(upload.array());
 
 app.use("/api/posts", postRouter);
 app.use("/api/users", userRouter);
@@ -29,7 +35,7 @@ app.use(function (err, req, res, next) {
 
   // render the error page
   res.status(err.status || 500);
-  res.render("error");
+  res.json({ error: true });
 });
 
 module.exports = app;

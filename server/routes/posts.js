@@ -27,3 +27,5 @@ router.put("/:postId/comments/:commentId");
 
 //PUT edit a comment
 router.delete("/:postId/comments/:commentId");
+
+module.exports = router;
