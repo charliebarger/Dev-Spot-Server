@@ -35,10 +35,21 @@ exports.validatePost = () => {
   ];
 };
 
-//get single message
+//get single post
 exports.getSinglePost = async (req, res, next) => {
   try {
     const post = await postDb.findById(ObjectId(req.params.id));
+    res.json(post);
+  } catch (error) {
+    console.log(error);
+    next(error);
+  }
+};
+
+//get all posts
+exports.getAllPosts = async (req, res, next) => {
+  try {
+    const post = await postDb.find({}).sort({ timestamp: -1 }).populate("user");
     res.json(post);
   } catch (error) {
     console.log(error);
@@ -51,6 +62,24 @@ exports.deletePost = async (req, res, next) => {
   try {
     await postDb.findByIdAndDelete(req.params.id);
     res.json({ post: "deleted" });
+  } catch (error) {
+    next(error);
+  }
+};
+
+//update post
+exports.updatePost = async (req, res, next) => {
+  try {
+    const updatedPost = await postDb.findByIdAndUpdate(
+      ObjectId(req.params.id),
+      {
+        $set: {
+          title: req.body.postTitle,
+          body: req.body.postBody,
+        },
+      }
+    );
+    res.json({ updatedPost });
   } catch (error) {
     next(error);
   }

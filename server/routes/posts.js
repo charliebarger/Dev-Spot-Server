@@ -2,8 +2,6 @@ const express = require("express");
 const router = express.Router();
 const postController = require("../controllers/postController");
 const validationController = require("../controllers/validation");
-//GET all posts
-router.get("/");
 
 //POST new post
 router.post(
@@ -16,8 +14,11 @@ router.post(
 //GET single post
 router.get("/:id", postController.getSinglePost);
 
+//GET all post
+router.get("/", postController.getAllPosts);
+
 //PUT edit post
-router.put("/:id/edit");
+router.put("/:id/edit", postController.updatePost);
 
 //DELETE post
 router.delete("/:id/delete", postController.deletePost);
