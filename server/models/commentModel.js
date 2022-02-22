@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const { DateTime } = require("luxon");
 
-const postSchema = new mongoose.Schema({
+const commentSchema = new mongoose.Schema({
   comment: {
     type: String,
     required: "this field is required",
@@ -18,10 +18,10 @@ const postSchema = new mongoose.Schema({
   },
 });
 
-postSchema.virtual("date").get(function () {
+commentSchema.virtual("date").get(function () {
   return DateTime.fromJSDate(this.timestamp)
     .toLocaleString(DateTime.DATETIME_SHORT)
     .replace(",", " |");
 });
 
-module.exports = mongoose.model("post", postSchema);
+module.exports = mongoose.model("comment", commentSchema);

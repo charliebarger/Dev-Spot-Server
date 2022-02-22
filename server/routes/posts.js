@@ -1,11 +1,17 @@
 const express = require("express");
 const router = express.Router();
-
+const commentController = require("../controllers/postController");
+const validationController = require("../controllers/validation");
 //GET all posts
 router.get("/");
 
 //POST new post
-router.post("/");
+router.post(
+  "/",
+  commentController.validatePost(),
+  validationController.checkValidation,
+  commentController.createPost
+);
 
 //GET single post
 router.get("/:id");
