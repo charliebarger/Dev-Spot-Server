@@ -47,10 +47,10 @@ exports.getSinglePost = async (req, res, next) => {
 };
 
 //allow deelting message is the user is an admin
-exports.deleteMessage = async (req, res, next) => {
+exports.deletePost = async (req, res, next) => {
   try {
     await postDb.findByIdAndDelete(req.params.id);
-    res.redirect("/");
+    res.json({ post: "deleted" });
   } catch (error) {
     next(error);
   }

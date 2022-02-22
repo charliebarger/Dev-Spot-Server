@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const commentController = require("../controllers/postController");
+const postController = require("../controllers/postController");
 const validationController = require("../controllers/validation");
 //GET all posts
 router.get("/");
@@ -8,19 +8,19 @@ router.get("/");
 //POST new post
 router.post(
   "/",
-  commentController.validatePost(),
+  postController.validatePost(),
   validationController.checkValidation,
-  commentController.createPost
+  postController.createPost
 );
 
 //GET single post
-router.get("/:id", commentController.getSinglePost);
+router.get("/:id", postController.getSinglePost);
 
 //PUT edit post
 router.put("/:id/edit");
 
 //DELETE post
-router.delete("/:id/delete");
+router.delete("/:id/delete", postController.deletePost);
 
 //GET all comments on post
 router.get("/:id/comments");
