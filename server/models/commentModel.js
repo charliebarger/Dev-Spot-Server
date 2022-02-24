@@ -11,6 +11,11 @@ const commentSchema = new mongoose.Schema({
     default: Date.now,
     required: "this field is required",
   },
+  post: {
+    type: mongoose.SchemaTypes.ObjectId,
+    ref: "post",
+    required: "this field is required",
+  },
   user: {
     type: mongoose.SchemaTypes.ObjectId,
     ref: "user",
