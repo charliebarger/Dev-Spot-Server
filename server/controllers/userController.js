@@ -1,14 +1,12 @@
 const userDB = require("../models/usersModel");
 const { check } = require("express-validator");
 
-const checkUsernameAvailability = async (req, res, next) => {
-  console.log(req.body);
+const checkEmailAvailability = async (req, res, next) => {
   try {
-    const usernameUnavailable = await userDB.exists({
-      username: req.body.username,
+    const emailUnavailable = await userDB.exists({
+      email: req.body.email,
     });
-    console.log(usernameUnavailable);
-    if (usernameUnavailable) {
+    if (emailUnavailable) {
       //   req.flash("msg", "Username is Not Available");
       //   req.flash("url", req.body.imageUrl);
       //   res.redirect("/sign-up");
@@ -32,16 +30,6 @@ const checkPasswordLength = async (req, res, next) => {
   }
 };
 
-const checkUsernameLength = async (req, res, next) => {
-  if (req.body.username.length > 20 || req.body.username.length < 5) {
-    // req.flash("msg", "Username must be between 5 and 20 characters");
-    // req.flash("url", req.body.imageUrl);
-    res.json({ status: "error" });
-  } else {
-    next();
-  }
-};
-
 const checkConfirmPassword = async (req, res, next) => {
   if (req.body.password != req.body.confirmPassword) {
     // req.flash("username", req.body.username);
@@ -54,17 +42,18 @@ const checkConfirmPassword = async (req, res, next) => {
 };
 
 exports.checkSignUpFormValidity = [
-  checkUsernameAvailability,
+  checkEmailAvailability,
   checkPasswordLength,
   checkConfirmPassword,
-  checkUsernameLength,
 ];
 
 //create a new user
 exports.createUser = async (req, res, next) => {
   try {
     const user = await userDB({
-      username: req.body.username,
+      firstName: req.body.firstName,
+      lastName: req.body.lastName,
+      email: req.body.email,
       password: req.body.password,
     });
     await userDB.create(user);
@@ -77,9 +66,20 @@ exports.createUser = async (req, res, next) => {
 //user validation
 exports.signUpvalidate = (req, res) => {
   return [
-    check("username", "username is required")
+    check("firstName", "name is required")
       .notEmpty()
       .isString()
+      .trim()
+      .toLowerCase(),
+    check("lastName", "name is required")
+      .notEmpty()
+      .isString()
+      .trim()
+      .toLowerCase(),
+    check("email", "email is required")
+      .notEmpty()
+      .isString()
+      .isEmail()
       .isLength({ min: 5, max: 20 })
       .trim()
       .toLowerCase(),

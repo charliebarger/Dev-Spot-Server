@@ -8,10 +8,19 @@ var logger = require("morgan");
 const postRouter = require("./server/routes/posts");
 const userRouter = require("./server/routes/users");
 var app = express();
-
+const cors = require("cors");
+const jwt = require("jsonwebtoken");
 var multer = require("multer");
 var upload = multer();
 
+app.use(
+  cors({
+    origin: "*",
+    methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+    preflightContinue: false,
+    optionsSuccessStatus: 204,
+  })
+);
 app.use(logger("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));

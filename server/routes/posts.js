@@ -2,6 +2,9 @@ const express = require("express");
 const router = express.Router();
 const postController = require("../controllers/postController");
 const validationController = require("../controllers/validation");
+const commentController = require("../controllers/commentController");
+
+//post routes
 
 //POST new post
 router.post(
@@ -23,16 +26,23 @@ router.put("/:id/edit", postController.updatePost);
 //DELETE post
 router.delete("/:id/delete", postController.deletePost);
 
+//comment routes
+
 //GET all comments on post
-router.get("/:id/comments");
+router.get("/:postId/comments", commentController.getComments);
 
 //POST a comment
-router.post("/:id/comments");
+router.post(
+  "/:postId/comments",
+  commentController.validateComment(),
+  validationController.checkValidation,
+  commentController.createComment
+);
 
-//PUT edit a comment
-router.put("/:postId/comments/:commentId");
+//PUT edit a comment (currently not allowed)
+// router.put("/:postId/comments/:commentId");
 
-//PUT edit a comment
-router.delete("/:postId/comments/:commentId");
+//PUT delete a comment
+router.delete("/comments/:commentId/delete", commentController.deleteComment);
 
 module.exports = router;

@@ -5,7 +5,7 @@ const ObjectId = require("mongodb").ObjectId;
 //add message to db
 exports.createPost = async (req, res, next) => {
   try {
-    const userId = ObjectId(req.body.userId);
+    const userId = ObjectId(req.body.user);
     const user = await postDb({
       user: userId,
       title: req.body.postTitle,
