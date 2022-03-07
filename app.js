@@ -4,15 +4,16 @@ var createError = require("http-errors");
 var express = require("express");
 var path = require("path");
 var cookieParser = require("cookie-parser");
+const passport = require("passport");
+require("./server/passport");
 var logger = require("morgan");
 const postRouter = require("./server/routes/posts");
 const userRouter = require("./server/routes/users");
 var app = express();
 const cors = require("cors");
-const jwt = require("jsonwebtoken");
 var multer = require("multer");
 var upload = multer();
-
+app.use(passport.initialize());
 app.use(
   cors({
     origin: "*",

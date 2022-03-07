@@ -2,6 +2,7 @@ const userDB = require("../models/usersModel");
 const { check } = require("express-validator");
 
 const checkEmailAvailability = async (req, res, next) => {
+  console.log("here1");
   try {
     const emailUnavailable = await userDB.exists({
       email: req.body.email,
@@ -9,8 +10,7 @@ const checkEmailAvailability = async (req, res, next) => {
     if (emailUnavailable) {
       //   req.flash("msg", "Username is Not Available");
       //   req.flash("url", req.body.imageUrl);
-      //   res.redirect("/sign-up");
-      res.json({ status: "error" });
+      res.json({ "": "error" });
     } else {
       next();
     }
@@ -20,6 +20,7 @@ const checkEmailAvailability = async (req, res, next) => {
 };
 
 const checkPasswordLength = async (req, res, next) => {
+  console.log("here2");
   if (req.body.password.length < 5) {
     // req.flash("msg", "Password must be more than 5 characters");
     // req.flash("username", req.body.username);
@@ -31,6 +32,7 @@ const checkPasswordLength = async (req, res, next) => {
 };
 
 const checkConfirmPassword = async (req, res, next) => {
+  console.log("here3");
   if (req.body.password != req.body.confirmPassword) {
     // req.flash("username", req.body.username);
     // req.flash("msg", "Passwords do not match");
@@ -49,6 +51,8 @@ exports.checkSignUpFormValidity = [
 
 //create a new user
 exports.createUser = async (req, res, next) => {
+  console.log(req.body);
+  console.log("here");
   try {
     const user = await userDB({
       firstName: req.body.firstName,
@@ -80,7 +84,6 @@ exports.signUpvalidate = (req, res) => {
       .notEmpty()
       .isString()
       .isEmail()
-      .isLength({ min: 5, max: 20 })
       .trim()
       .toLowerCase(),
     check("password", "password is required")
