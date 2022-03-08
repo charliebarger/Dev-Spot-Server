@@ -16,7 +16,8 @@ exports.logIn = (req, res) => {
       if (err) {
         res.send(err);
       }
-      const token = jwt.sign(user.toJSON(), "secret");
+      const token = "Bearer " + jwt.sign(user.toJSON(), "secret");
+      console.log(token);
       return res.json({ user, token });
     });
   })(req, res);
