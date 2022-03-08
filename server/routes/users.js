@@ -23,7 +23,6 @@ router.get(
   "/protected",
   passport.authenticate("jwt", { session: false }),
   (req, res) => {
-    console.log(req.user);
     return res.status(200).send({
       success: true,
       user: {
