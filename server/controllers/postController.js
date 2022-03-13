@@ -1,20 +1,43 @@
 const postDb = require("../models/postModel");
 const { check } = require("express-validator");
 const ObjectId = require("mongodb").ObjectId;
+const sanitizeHtml = require("sanitize-html");
+const jwt = require("jsonwebtoken");
+ExtractJwt = require("passport-jwt").ExtractJwt;
+const passport = require("passport");
+/* POST login. */
 
-//add message to db
-exports.createPost = async (req, res, next) => {
+exports.creatIt = (req, res) => {
+  passport.authenticate("jwt", { session: false }, (err, user) => {
+    if (err || !user) {
+      return res.status(401).json({
+        error: "Invalid User",
+      });
+    } else {
+      const addToDB = async () => {
+        try {
+          const post = await postDb({
+            user: user._id,
+            title: req.body.title,
+            body: req.body.postBody,
+            imageUrl: req.body.imageUrl,
+          });
+          await postDb.create(post);
+          return res.status(200).send({ status: "post added" });
+        } catch (error) {
+          return res.json(error);
+        }
+      };
+      addToDB();
+    }
+  })(req, res);
+};
+
+exports.sanitizePostBody = (req, body, next) => {
   try {
-    const userId = ObjectId(req.body.user);
-    const user = await postDb({
-      user: userId,
-      title: req.body.postTitle,
-      body: req.body.postBody,
-    });
-    await postDb.create(user);
-    res.json({ status: "post added" });
+    sanitizeHtml(req.body.postBody);
+    next();
   } catch (error) {
-    console.log(error);
     next(error);
   }
 };
@@ -22,11 +45,12 @@ exports.createPost = async (req, res, next) => {
 //validate messages
 exports.validatePost = () => {
   return [
-    check("postTitle", "title is required")
+    check("title", "title is required")
       .notEmpty()
       .isString()
       .isLength({ max: 25 })
       .trim(),
+    // check("imageUrl").exists().isString().trim(),
     check("postBody", "body is required")
       .notEmpty()
       .isString()
@@ -74,7 +98,7 @@ exports.updatePost = async (req, res, next) => {
       ObjectId(req.params.id),
       {
         $set: {
-          title: req.body.postTitle,
+          title: req.body.title,
           body: req.body.postBody,
         },
       }
