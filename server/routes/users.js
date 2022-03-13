@@ -19,6 +19,11 @@ const { user } = require("../pop");
 /* POST login. */
 router.post("/login", signInController.logIn);
 
+router.post("/logout", function (req, res) {
+  req.logout();
+  res.send({ loggedOut: true });
+});
+
 router.get(
   "/protected",
   passport.authenticate("jwt", { session: false }),
