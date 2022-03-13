@@ -10,14 +10,12 @@ const postSchema = new mongoose.Schema({
     type: String,
     required: "this field is required",
   },
+  imageUrl: {
+    type: String,
+  },
   timestamp: {
     type: Date,
     default: Date.now,
-    required: "this field is required",
-  },
-  likes: {
-    type: Number,
-    default: 0,
     required: "this field is required",
   },
   user: {
