@@ -35,9 +35,10 @@ exports.creatIt = (req, res) => {
 
 exports.sanitizePostBody = (req, body, next) => {
   try {
-    sanitizeHtml(req.body.postBody);
+    req.body.postBody = sanitizeHtml(req.body.postBody);
     next();
   } catch (error) {
+    console.log("sanitize error");
     next(error);
   }
 };
@@ -51,11 +52,7 @@ exports.validatePost = () => {
       .isLength({ max: 25 })
       .trim(),
     // check("imageUrl").exists().isString().trim(),
-    check("postBody", "body is required")
-      .notEmpty()
-      .isString()
-      .isLength({ max: 140 })
-      .trim(),
+    check("postBody", "body is required").notEmpty().isString().trim(),
   ];
 };
 
