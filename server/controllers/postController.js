@@ -33,8 +33,9 @@ exports.creatIt = (req, res) => {
   })(req, res);
 };
 
-exports.sanitizePostBody = (req, body, next) => {
+const sanitizePostBody = (req, body, next) => {
   try {
+    console.log("sanitize post body");
     req.body.postBody = sanitizeHtml(req.body.postBody);
     next();
   } catch (error) {
@@ -42,6 +43,26 @@ exports.sanitizePostBody = (req, body, next) => {
     next(error);
   }
 };
+
+const checkUrl = (req, res, next) => {
+  console.log("check url");
+  if (req.body.imageUrl == "") {
+    req.body.imageUrl = "https://i.imgur.com/gT6nqAf.png";
+  }
+  next();
+};
+
+const checkImg = async (req, res, next) => {
+  console.log("check img");
+  const image = req.body.imageUrl.match(/(jpeg|jpg|gif|png)/) != null;
+  if (image) {
+    next();
+  } else {
+    res.status(400).json({ error: "Not A Valid Image" });
+  }
+};
+
+exports.checkFormValidity = [sanitizePostBody, checkUrl, checkImg];
 
 //validate messages
 exports.validatePost = () => {

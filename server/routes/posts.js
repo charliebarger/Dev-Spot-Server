@@ -9,7 +9,7 @@ const commentController = require("../controllers/commentController");
 //POST new post
 router.post(
   "/",
-  postController.sanitizePostBody,
+  postController.checkFormValidity,
   postController.validatePost(),
   validationController.checkValidation,
   postController.creatIt
