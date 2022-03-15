@@ -3,6 +3,7 @@ const LocalStrategy = require("passport-local").Strategy;
 const userDB = require("./models/usersModel");
 const bcrypt = require("bcrypt");
 const passportJWT = require("passport-jwt");
+const ObjectId = require("mongodb").ObjectId;
 var JwtStrategy = require("passport-jwt").Strategy,
   ExtractJwt = require("passport-jwt").ExtractJwt;
 passport.use(
@@ -44,11 +45,13 @@ opts.secretOrKey = "secret";
 
 passport.use(
   new JwtStrategy(opts, function (jwt_payload, done) {
-    userDB.findOne({ id: jwt_payload._id }, function (err, user) {
+    console.log(jwt_payload._id);
+    userDB.findById(jwt_payload._id, function (err, user) {
       if (err) {
         return done(err, false);
       }
       if (user) {
+        console.log(user);
         return done(null, user);
       } else {
         return done(null, false);
