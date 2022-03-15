@@ -80,8 +80,10 @@ exports.validatePost = () => {
 //get single post
 exports.getSinglePost = async (req, res, next) => {
   try {
-    const post = await postDb.findById(ObjectId(req.params.id));
-    res.json(post);
+    const post = await postDb
+      .findById(ObjectId(req.params.id))
+      .populate("user");
+    res.json({ post });
   } catch (error) {
     console.log(error);
     next(error);
