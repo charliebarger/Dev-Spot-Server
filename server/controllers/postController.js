@@ -35,8 +35,10 @@ exports.creatIt = (req, res) => {
 
 const sanitizePostBody = (req, body, next) => {
   try {
-    console.log("sanitize post body");
+    console.log(req.body.postBody);
     req.body.postBody = sanitizeHtml(req.body.postBody);
+    console.log(req.body.postBody);
+    console.log(typeof req.body.postBody);
     next();
   } catch (error) {
     console.log("sanitize error");
@@ -45,7 +47,6 @@ const sanitizePostBody = (req, body, next) => {
 };
 
 const checkUrl = (req, res, next) => {
-  console.log("check url");
   if (req.body.imageUrl == "") {
     req.body.imageUrl = "https://i.imgur.com/gT6nqAf.png";
   }
@@ -53,7 +54,6 @@ const checkUrl = (req, res, next) => {
 };
 
 const checkImg = async (req, res, next) => {
-  console.log("check img");
   const image = req.body.imageUrl.match(/(jpeg|jpg|gif|png)/) != null;
   if (image) {
     next();
