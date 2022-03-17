@@ -26,7 +26,7 @@ const commentSchema = new mongoose.Schema({
 commentSchema.virtual("date").get(function () {
   return DateTime.fromJSDate(this.timestamp)
     .toLocaleString(DateTime.DATETIME_SHORT)
-    .replace(",", " |");
+    .replace(",", " at");
 });
 
 module.exports = mongoose.model("comment", commentSchema);
