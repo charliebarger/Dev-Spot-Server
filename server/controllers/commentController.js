@@ -1,23 +1,33 @@
 const commentDb = require("../models/commentModel");
 const { check } = require("express-validator");
 const ObjectId = require("mongodb").ObjectId;
-
+const passport = require("passport");
 //add message to db
-exports.createComment = async (req, res, next) => {
-  try {
-    const userId = ObjectId(req.body.user);
-    const postId = ObjectId(req.params.postId);
-    const user = await commentDb({
-      user: userId,
-      post: postId,
-      comment: req.body.comment,
-    });
-    await commentDb.create(user);
-    res.json({ status: "post added" });
-  } catch (error) {
-    console.log(error);
-    next(error);
-  }
+
+exports.createComment = (req, res) => {
+  passport.authenticate("jwt", { session: false }, (err, user) => {
+    if (err || !user) {
+      return res.status(401).json({
+        error: err[1].msg,
+      });
+    } else {
+      console.log("reach below");
+      const addToDB = async () => {
+        try {
+          const post = await commentDb({
+            user: user._id,
+            comment: req.body.comment,
+            post: ObjectId(req.params.postId),
+          });
+          await commentDb.create(post);
+          return res.status(200).send({ status: "post added" });
+        } catch (error) {
+          return res.status(401).json(error);
+        }
+      };
+      addToDB();
+    }
+  })(req, res);
 };
 
 //validate messages
