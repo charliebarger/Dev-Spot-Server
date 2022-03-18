@@ -11,7 +11,7 @@ exports.creatIt = (req, res) => {
   passport.authenticate("jwt", { session: false }, (err, user) => {
     if (err || !user) {
       return res.status(401).json({
-        error: "Invalid User",
+        error: err[1].msg,
       });
     } else {
       const addToDB = async () => {
@@ -74,7 +74,7 @@ exports.validatePost = () => {
       .isLength({ max: 25 })
       .trim(),
     // check("imageUrl").exists().isString().trim(),
-    check("postBody", "body is required").notEmpty().isString().trim(),
+    check("postBody", "Post Body Cannot be Empty").notEmpty().isString().trim(),
   ];
 };
 

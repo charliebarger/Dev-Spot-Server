@@ -37,10 +37,16 @@ const postSchema = new mongoose.Schema(
   schemaOptions
 );
 
+postSchema.virtual("shortDate").get(function () {
+  return DateTime.fromJSDate(this.timestamp).toLocaleString(
+    DateTime.DATE_SHORT
+  );
+});
+
 postSchema.virtual("date").get(function () {
   return DateTime.fromJSDate(this.timestamp)
     .toLocaleString(DateTime.DATETIME_SHORT)
-    .replace(",", " |");
+    .replace(",", " at");
 });
 
 module.exports = mongoose.model("post", postSchema);

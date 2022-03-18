@@ -6,7 +6,7 @@ const signInController = require("../controllers/signIn");
 //POST log in
 router.post(
   "/signup",
-  userController.checkSignUpFormValidity,
+  userController.checkEmailAvailability,
   userController.signUpvalidate(),
   validationController.checkValidation,
   userController.createUser

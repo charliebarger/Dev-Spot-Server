@@ -1,53 +1,17 @@
 const userDB = require("../models/usersModel");
 const { check } = require("express-validator");
 
-const checkEmailAvailability = async (req, res, next) => {
+exports.checkEmailAvailability = async (req, res, next) => {
   console.log("here1");
   try {
     const emailUnavailable = await userDB.exists({
       email: req.body.email,
     });
-    if (emailUnavailable) {
-      //   req.flash("msg", "Username is Not Available");
-      //   req.flash("url", req.body.imageUrl);
-      res.json({ "": "error" });
-    } else {
-      next();
-    }
+    emailUnavailable ? res.json({ error: "Email is Unavailable" }) : next();
   } catch (error) {
     next(error);
   }
 };
-
-const checkPasswordLength = async (req, res, next) => {
-  console.log("here2");
-  if (req.body.password.length < 5) {
-    // req.flash("msg", "Password must be more than 5 characters");
-    // req.flash("username", req.body.username);
-    // req.flash("url", req.body.imageUrl);
-    res.json({ status: "error" });
-  } else {
-    next();
-  }
-};
-
-const checkConfirmPassword = async (req, res, next) => {
-  console.log("here3");
-  if (req.body.password != req.body.confirmPassword) {
-    // req.flash("username", req.body.username);
-    // req.flash("msg", "Passwords do not match");
-    // req.flash("url", req.body.imageUrl);
-    res.json({ status: "error" });
-  } else {
-    next();
-  }
-};
-
-exports.checkSignUpFormValidity = [
-  checkEmailAvailability,
-  checkPasswordLength,
-  checkConfirmPassword,
-];
 
 //create a new user
 exports.createUser = async (req, res, next) => {
@@ -86,14 +50,16 @@ exports.signUpvalidate = (req, res) => {
       .isEmail()
       .trim()
       .toLowerCase(),
-    check("password", "password is required")
+    check("password", "Password Must be Between 5 and 50 characters")
       .notEmpty()
-      .isLength({ min: 5, max: 20 })
-      .custom((value, { req }) => {
+      .isLength({ min: 5, max: 20 }),
+    check("password", "Password Confirmation is Invalid").custom(
+      (value, { req }) => {
         if (value !== req.body.confirmPassword) {
-          throw new Error("Password confirmation does not match password");
+          return false;
         }
         return true;
-      }),
+      }
+    ),
   ];
 };
