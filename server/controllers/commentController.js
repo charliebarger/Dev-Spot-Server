@@ -41,7 +41,8 @@ exports.getComments = async (req, res, next) => {
   try {
     const post = await commentDb
       .find({ post: ObjectId(req.params.postId) })
-      .sort({ timestamp: -1 });
+      .sort({ timestamp: -1 })
+      .populate("user");
     //   .populate("user")
     //   .populate("post");
     res.json(post);
