@@ -27,6 +27,19 @@ router.put("/:id/edit", postController.updatePost);
 //DELETE post
 router.delete("/:id/delete", postController.deletePost);
 
+// POST save draft
+router.post(
+  "/draft",
+  (req, res, next) => {
+    console.log("proper route");
+    next();
+  },
+  postController.sanitizePostBody,
+  postController.validateDraft(),
+  validationController.checkValidation,
+  postController.creatIt
+);
+
 //comment routes
 
 //GET all comments on post
