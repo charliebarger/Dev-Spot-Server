@@ -1,6 +1,10 @@
 const userDB = require("../models/usersModel");
 const { check } = require("express-validator");
-
+const draftDb = require("../models/draftModel");
+const postDb = require("../models/postModel");
+const jwt = require("jsonwebtoken");
+ExtractJwt = require("passport-jwt").ExtractJwt;
+const passport = require("passport");
 exports.checkEmailAvailability = async (req, res, next) => {
   console.log("here1");
   try {
@@ -62,4 +66,41 @@ exports.signUpvalidate = (req, res) => {
       }
     ),
   ];
+};
+
+const getDraftsbyUser = async (user) => {
+  try {
+    const drafts = await draftDb.find({ user: user.id });
+    return drafts;
+  } catch (error) {
+    return false;
+  }
+};
+
+const getPostsbyUser = async (user) => {
+  try {
+    const posts = await postDb.find({ user: user.id });
+    return posts;
+  } catch (error) {
+    return false;
+  }
+};
+exports.getDashboard = (req, res) => {
+  passport.authenticate("jwt", { session: false }, (err, user) => {
+    console.log("error here");
+    console.log(err, user);
+    if (err || !user) {
+      return res.status(401).json({
+        error: err[1].msg,
+      });
+    } else {
+      const getPosts = async () => {
+        console.log("no auth error");
+        const drafts = await getDraftsbyUser(user);
+        const posts = await getPostsbyUser(user);
+        res.json({ user, drafts, posts });
+      };
+      getPosts();
+    }
+  })(req, res);
 };

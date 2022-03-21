@@ -44,4 +44,7 @@ router.post("/logout");
 //GET single user
 router.get("/:id");
 
+//dashboard
+router.get("/dashboard", userController.getDashboard);
+
 module.exports = router;
