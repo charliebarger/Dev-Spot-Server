@@ -25,7 +25,7 @@ router.get("/", postController.getAllPosts);
 router.put("/:id/edit", postController.updatePost);
 
 //DELETE post
-router.delete("/:id/delete", postController.deletePost);
+router.delete("/delete/:id", postController.deletePost);
 
 // POST save draft
 router.post(

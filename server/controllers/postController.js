@@ -114,14 +114,6 @@ exports.getAllPosts = async (req, res, next) => {
 };
 
 //allow deelting message is the user is an admin
-exports.deletePost = async (req, res, next) => {
-  try {
-    await postDb.findByIdAndDelete(req.params.id);
-    res.json({ post: "deleted" });
-  } catch (error) {
-    next(error);
-  }
-};
 
 //update post
 exports.updatePost = async (req, res, next) => {
@@ -139,4 +131,41 @@ exports.updatePost = async (req, res, next) => {
   } catch (error) {
     next(error);
   }
+};
+
+exports.deletePost = async (req, res, next) => {
+  console.log(req.params.id);
+  try {
+    const findArticle = await postDb.findById(req.params.id);
+    console.log(findArticle.user.id);
+    await postDb.findByIdAndDelete(req.params.id);
+    res.json({ status: "deleted" });
+  } catch (error) {
+    res.json(error);
+  }
+};
+
+exports.delete = (req, res, next) => {
+  passport.authenticate("jwt", { session: false }, (err, user) => {
+    if (err || !user) {
+      return res.status(401).json({
+        error: err[1].msg,
+      });
+    } else {
+      const deletePost = async () => {
+        try {
+          const article = await postDb.findById(req.params.id);
+          const author = article.user.id;
+          if (author == user.id) {
+            await postDb.findByIdAndDelete(req.params.id);
+            res.json({ status: "deleted" });
+          } else {
+            throw new Error("Not Authorized");
+          }
+        } catch (error) {
+          res.status(401).send(error);
+        }
+      };
+    }
+  })(req, res);
 };
