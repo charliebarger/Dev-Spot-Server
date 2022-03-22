@@ -100,6 +100,18 @@ exports.getSinglePost = async (req, res, next) => {
   }
 };
 
+exports.getSingleDraft = async (req, res, next) => {
+  try {
+    const post = await draftDb
+      .findById(ObjectId(req.params.id))
+      .populate("user");
+    res.json({ post });
+  } catch (error) {
+    console.log(error);
+    next(error);
+  }
+};
+
 //get all posts
 exports.getAllPosts = async (req, res, next) => {
   try {
@@ -115,19 +127,25 @@ exports.getAllPosts = async (req, res, next) => {
 
 //update post
 exports.updatePost = async (req, res, next) => {
+  console.log("here at update post");
   const draft = req.url.includes("draft");
+  console.log(draft);
   passport.authenticate("jwt", { session: false }, (err, user) => {
     if (err || !user) {
       return res.status(401).json({
         error: err[1].msg,
       });
     } else {
+      console.log(req.body);
       const pickDb = draft ? draftDb : postDb;
       const updatePost = async () => {
         try {
-          const article = await postDb.findById(req.params.id).populate("user");
+          const article = await pickDb.findById(req.params.id).populate("user");
           const author = article.user.id;
+          console.log(author);
+          console.log(user.id);
           if (author == user.id) {
+            console.log("ok were gunna call it!");
             await pickDb.findByIdAndUpdate(ObjectId(req.params.id), {
               $set: {
                 title: req.body.title,
@@ -148,21 +166,7 @@ exports.updatePost = async (req, res, next) => {
   })(req, res);
 };
 
-exports.deletePost = async (req, res, next) => {
-  console.log("at delete");
-  try {
-    console.log(req.params.id);
-    const draft = req.url.includes("draft");
-    console.log(`is a draft? ${draft}`);
-    const pickDb = draft ? draftDb : postDb;
-    await pickDb.findByIdAndDelete(req.params.id);
-    res.json({ status: "deleted" });
-  } catch (error) {
-    res.json(error);
-  }
-};
-
-exports.delete = (req, res, next) => {
+exports.deletePost = (req, res, next) => {
   passport.authenticate("jwt", { session: false }, (err, user) => {
     if (err || !user) {
       return res.status(401).json({
@@ -171,10 +175,12 @@ exports.delete = (req, res, next) => {
     } else {
       const deletePost = async () => {
         try {
-          const article = await postDb.findById(req.params.id).populate("user");
+          const draft = req.url.includes("draft");
+          const pickDb = draft ? draftDb : postDb;
+          const article = await pickDb.findById(req.params.id).populate("user");
           const author = article.user.id;
           if (author == user.id) {
-            await postDb.findByIdAndDelete(req.params.id);
+            await pickDb.findByIdAndDelete(req.params.id);
             res.json({ status: "deleted" });
           } else {
             throw new Error("Not Authorized");

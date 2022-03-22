@@ -18,8 +18,14 @@ router.post(
 //PUT edit post
 router.put("/update/:id", postController.updatePost);
 
+//PUT edit draft
+router.put("/draft/update/:id", postController.updatePost);
+
 //GET single post
 router.get("/:id", postController.getSinglePost);
+
+//Get single draft
+router.get("/draft/:id", postController.getSingleDraft);
 
 //GET all post
 router.get("/", postController.getAllPosts);
