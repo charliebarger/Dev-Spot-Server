@@ -9,7 +9,6 @@ const passport = require("passport");
 /* POST login. */
 
 exports.creatIt = (req, res) => {
-  console.log("at creatIT");
   const draft = req.url.includes("draft");
   passport.authenticate("jwt", { session: false }, (err, user) => {
     if (err || !user) {
@@ -116,7 +115,6 @@ exports.getAllPosts = async (req, res, next) => {
 
 //update post
 exports.updatePost = async (req, res, next) => {
-  console.log("trying to update post beep bop beep bop");
   const draft = req.url.includes("draft");
   passport.authenticate("jwt", { session: false }, (err, user) => {
     if (err || !user) {
@@ -124,7 +122,6 @@ exports.updatePost = async (req, res, next) => {
         error: err[1].msg,
       });
     } else {
-      console.log("i am a valid user");
       const pickDb = draft ? draftDb : postDb;
       const updatePost = async () => {
         try {
@@ -152,11 +149,13 @@ exports.updatePost = async (req, res, next) => {
 };
 
 exports.deletePost = async (req, res, next) => {
-  console.log(req.params.id);
+  console.log("at delete");
   try {
-    const findArticle = await postDb.findById(req.params.id);
-    console.log(findArticle.user.id);
-    await postDb.findByIdAndDelete(req.params.id);
+    console.log(req.params.id);
+    const draft = req.url.includes("draft");
+    console.log(`is a draft? ${draft}`);
+    const pickDb = draft ? draftDb : postDb;
+    await pickDb.findByIdAndDelete(req.params.id);
     res.json({ status: "deleted" });
   } catch (error) {
     res.json(error);
@@ -172,9 +171,8 @@ exports.delete = (req, res, next) => {
     } else {
       const deletePost = async () => {
         try {
-          const article = await postDb.findById(req.params.id);
+          const article = await postDb.findById(req.params.id).populate("user");
           const author = article.user.id;
-          console.log(author);
           if (author == user.id) {
             await postDb.findByIdAndDelete(req.params.id);
             res.json({ status: "deleted" });
