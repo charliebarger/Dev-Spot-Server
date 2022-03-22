@@ -46,13 +46,10 @@ opts.secretOrKey = "secret";
 passport.use(
   new JwtStrategy(opts, function (jwt_payload, done) {
     userDB.findById(jwt_payload._id, function (err, user) {
-      console.log("user found");
-      console.log(user);
       if (err) {
         return done(err, false);
       }
       if (user) {
-        console.log(user);
         return done(null, user);
       } else {
         return done(null, false);

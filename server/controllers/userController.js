@@ -87,7 +87,6 @@ const getPostsbyUser = async (user) => {
 };
 exports.getDashboard = (req, res) => {
   passport.authenticate("jwt", { session: false }, (err, user) => {
-    console.log("error here");
     console.log(err, user);
     if (err || !user) {
       return res.status(401).json({
@@ -95,7 +94,6 @@ exports.getDashboard = (req, res) => {
       });
     } else {
       const getPosts = async () => {
-        console.log("no auth error");
         const drafts = await getDraftsbyUser(user);
         const posts = await getPostsbyUser(user);
         res.json({ user, drafts, posts });

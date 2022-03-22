@@ -124,17 +124,24 @@ exports.updatePost = async (req, res, next) => {
         error: err[1].msg,
       });
     } else {
+      console.log("i am a valid user");
       const pickDb = draft ? draftDb : postDb;
       const updatePost = async () => {
         try {
-          await pickDb.findByIdAndUpdate(ObjectId(req.params.id), {
-            $set: {
-              title: req.body.title,
-              body: req.body.postBody,
-              imageUrl: req.body.imageUrl,
-            },
-          });
-          res.json({ post: updated });
+          const article = await postDb.findById(req.params.id).populate("user");
+          const author = article.user.id;
+          if (author == user.id) {
+            await pickDb.findByIdAndUpdate(ObjectId(req.params.id), {
+              $set: {
+                title: req.body.title,
+                body: req.body.postBody,
+                imageUrl: req.body.imageUrl,
+              },
+            });
+            res.json({ post: updated });
+          } else {
+            throw new Error("Not Authorized");
+          }
         } catch (error) {
           res.json({ error });
         }
@@ -167,6 +174,7 @@ exports.delete = (req, res, next) => {
         try {
           const article = await postDb.findById(req.params.id);
           const author = article.user.id;
+          console.log(author);
           if (author == user.id) {
             await postDb.findByIdAndDelete(req.params.id);
             res.json({ status: "deleted" });
@@ -177,6 +185,7 @@ exports.delete = (req, res, next) => {
           res.status(401).send(error);
         }
       };
+      deletePost();
     }
   })(req, res);
 };

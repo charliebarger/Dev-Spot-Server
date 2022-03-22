@@ -30,6 +30,8 @@ router.put("/:id/edit", postController.updatePost);
 //DELETE post
 router.delete("/delete/:id", postController.deletePost);
 
+router.delete("/draft/delete/:id", postController.deletePost);
+
 // POST save draft
 router.post(
   "/draft",
