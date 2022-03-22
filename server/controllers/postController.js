@@ -11,7 +11,6 @@ const passport = require("passport");
 exports.creatIt = (req, res) => {
   console.log("at creatIT");
   const draft = req.url.includes("draft");
-  console.log(draft);
   passport.authenticate("jwt", { session: false }, (err, user) => {
     if (err || !user) {
       return res.status(401).json({
@@ -117,20 +116,32 @@ exports.getAllPosts = async (req, res, next) => {
 
 //update post
 exports.updatePost = async (req, res, next) => {
-  try {
-    const updatedPost = await postDb.findByIdAndUpdate(
-      ObjectId(req.params.id),
-      {
-        $set: {
-          title: req.body.title,
-          body: req.body.postBody,
-        },
-      }
-    );
-    res.json({ updatedPost });
-  } catch (error) {
-    next(error);
-  }
+  console.log("trying to update post beep bop beep bop");
+  const draft = req.url.includes("draft");
+  passport.authenticate("jwt", { session: false }, (err, user) => {
+    if (err || !user) {
+      return res.status(401).json({
+        error: err[1].msg,
+      });
+    } else {
+      const pickDb = draft ? draftDb : postDb;
+      const updatePost = async () => {
+        try {
+          await pickDb.findByIdAndUpdate(ObjectId(req.params.id), {
+            $set: {
+              title: req.body.title,
+              body: req.body.postBody,
+              imageUrl: req.body.imageUrl,
+            },
+          });
+          res.json({ post: updated });
+        } catch (error) {
+          res.json({ error });
+        }
+      };
+      updatePost();
+    }
+  })(req, res);
 };
 
 exports.deletePost = async (req, res, next) => {

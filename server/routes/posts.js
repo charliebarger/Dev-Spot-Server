@@ -15,6 +15,9 @@ router.post(
   postController.creatIt
 );
 
+//PUT edit post
+router.put("/update/:id", postController.updatePost);
+
 //GET single post
 router.get("/:id", postController.getSinglePost);
 
