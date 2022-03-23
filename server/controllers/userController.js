@@ -128,7 +128,7 @@ const getPostsbyUser = async (user) => {
   }
 };
 
-exports.getDrafts = (req, res) => {
+exports.getDraftsByUser = (req, res) => {
   passport.authenticate("jwt", { session: false }, (err, user) => {
     if (err || !user) {
       return res.status(401).json({
@@ -148,7 +148,7 @@ exports.getDrafts = (req, res) => {
   })(req, res);
 };
 
-exports.getPosts = (req, res) => {
+exports.getPostsByUser = (req, res) => {
   passport.authenticate("jwt", { session: false }, (err, user) => {
     if (err || !user) {
       return res.status(401).json({

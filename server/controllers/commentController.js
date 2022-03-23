@@ -74,7 +74,6 @@ exports.deleteComment = async (req, res, next) => {
 //Express Validator (Form Vaidation)
 
 //Validate comments
-
 exports.validateComment = () => {
   return check("comment", "title is required").notEmpty().isString().trim();
 };
