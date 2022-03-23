@@ -151,6 +151,7 @@ exports.updatePost = async (req, res, next) => {
                 title: req.body.title,
                 body: req.body.postBody,
                 imageUrl: req.body.imageUrl,
+                timestamp: Date.now(),
               },
             });
             res.json({ post: updated });
@@ -190,6 +191,27 @@ exports.deletePost = (req, res, next) => {
         }
       };
       deletePost();
+    }
+  })(req, res);
+};
+
+exports.getPostsByUser = (req, res) => {
+  console.log("reached post by user");
+  passport.authenticate("jwt", { session: false }, (err, user) => {
+    if (err || !user) {
+      return res.status(401).json({
+        error: err[1].msg,
+      });
+    } else {
+      try {
+        const getPosts = async () => {
+          const posts = await postDb.find({ user: user.id });
+          res.json({ posts });
+        };
+        getPosts();
+      } catch (error) {
+        res.json(error);
+      }
     }
   })(req, res);
 };

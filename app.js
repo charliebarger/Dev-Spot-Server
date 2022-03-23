@@ -9,6 +9,7 @@ require("./server/passport");
 var logger = require("morgan");
 const postRouter = require("./server/routes/posts");
 const userRouter = require("./server/routes/users");
+const draftRouter = require("./server/routes/drafts");
 var app = express();
 const cors = require("cors");
 var multer = require("multer");
@@ -31,7 +32,7 @@ app.use(upload.array());
 
 app.use("/api/posts", postRouter);
 app.use("/api/users", userRouter);
-
+app.use("/api/drafts", draftRouter);
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
   next(createError(404));

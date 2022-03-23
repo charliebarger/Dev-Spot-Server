@@ -11,7 +11,7 @@ router.post(
   "/",
   postController.checkFormValidity,
   postController.validatePost(),
-  validationController.checkValidation,
+  validationController.checkFormForErrors,
   postController.creatIt
 );
 
@@ -20,6 +20,9 @@ router.put("/update/:id", postController.updatePost);
 
 //PUT edit draft
 router.put("/draft/update/:id", postController.updatePost);
+
+//GET all post
+router.get("/myPosts", postController.getPostsByUser);
 
 //GET single post
 router.get("/:id", postController.getSinglePost);
@@ -47,7 +50,7 @@ router.post(
   },
   postController.sanitizePostBody,
   postController.validateDraft(),
-  validationController.checkValidation,
+  validationController.checkFormForErrors,
   postController.creatIt
 );
 
@@ -60,7 +63,7 @@ router.get("/:postId/comments", commentController.getComments);
 router.post(
   "/:postId/comments",
   commentController.validateComment(),
-  validationController.checkValidation,
+  validationController.checkFormForErrors,
   commentController.createComment
 );
 
