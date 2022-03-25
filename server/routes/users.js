@@ -15,6 +15,8 @@ router.post(
   userController.createUser
 );
 
+router.get("/", userController.getUserInfo);
+
 // POST Login
 router.post("/login", signInController.logIn);
 

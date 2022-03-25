@@ -16,7 +16,7 @@ router.post(
   postController.sanitizePostBody,
   postController.validateDraft(),
   validationController.checkFormForErrors,
-  postController.creatIt
+  draftController.createDraft
 );
 
 //PUT edit draft

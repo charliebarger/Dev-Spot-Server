@@ -175,7 +175,9 @@ exports.getUserInfo = (req, res) => {
         error: err[1].msg,
       });
     } else {
-      res.json(user);
+      console.log("here");
+      console.log(user);
+      res.json({ user });
     }
   })(req, res);
 };

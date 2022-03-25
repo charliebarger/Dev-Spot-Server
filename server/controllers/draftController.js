@@ -26,3 +26,29 @@ exports.getDraftsByUser = (req, res) => {
     }
   })(req, res);
 };
+
+exports.createDraft = (req, res) => {
+  passport.authenticate("jwt", { session: false }, (err, user) => {
+    if (err || !user) {
+      return res.status(401).json({
+        error: err[1].msg,
+      });
+    } else {
+      const addToDB = async () => {
+        try {
+          const post = await draftDb({
+            user: user._id,
+            title: req.body.title,
+            body: req.body.postBody,
+            imageUrl: req.body.imageUrl,
+          });
+          await draftDb.create(post);
+          return res.status(200).send({ status: "post added" });
+        } catch (error) {
+          return res.json(error);
+        }
+      };
+      addToDB();
+    }
+  })(req, res);
+};

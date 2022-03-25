@@ -9,6 +9,8 @@ const passport = require("passport");
 /* POST login. */
 
 exports.creatIt = (req, res) => {
+  console.log("post here blahhh");
+  console.log(req.url);
   const draft = req.url.includes("draft");
   passport.authenticate("jwt", { session: false }, (err, user) => {
     if (err || !user) {
