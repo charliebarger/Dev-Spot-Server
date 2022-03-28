@@ -40,11 +40,13 @@ exports.creatIt = (req, res) => {
 
 const sanitizePostBody = (req, body, next) => {
   try {
-    req.body.postBody = sanitizeHtml(req.body.postBody, {
-      allowedAttributes: {
-        "*": ["style"],
-      },
-    });
+    req.body.postBody = req.body.postBody
+      ? sanitizeHtml(req.body.postBody, {
+          allowedAttributes: {
+            "*": ["style"],
+          },
+        })
+      : "";
     next();
   } catch (error) {
     console.log("sanitize error");
