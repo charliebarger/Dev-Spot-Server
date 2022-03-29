@@ -12,7 +12,7 @@ router.post(
   postController.checkFormValidity,
   postController.validatePost(),
   validationController.checkFormForErrors,
-  postController.creatIt
+  postController.createPost
 );
 
 //PUT edit post
@@ -51,7 +51,7 @@ router.post(
   postController.sanitizePostBody,
   postController.validateDraft(),
   validationController.checkFormForErrors,
-  postController.creatIt
+  postController.createPost
 );
 
 //comment routes

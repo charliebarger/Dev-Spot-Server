@@ -55,3 +55,40 @@ exports.createDraft = (req, res) => {
     }
   })(req, res);
 };
+
+exports.updateDraft = async (req, res, next) => {
+  passport.authenticate("jwt", { session: false }, (err, user) => {
+    if (err || !user) {
+      return res.status(401).json({
+        error: err[1].msg,
+      });
+    } else {
+      const updatePost = async () => {
+        try {
+          const article = await draftDb
+            .findById(req.params.id)
+            .populate("user");
+          const author = article.user.id;
+          console.log(author);
+          console.log(user.id);
+          if (author == user.id) {
+            await draftDb.findByIdAndUpdate(ObjectId(req.params.id), {
+              $set: {
+                title: req.body.title,
+                body: req.body.postBody,
+                imageUrl: req.body.imageUrl,
+                timestamp: Date.now(),
+              },
+            });
+            res.json({ draft: "updated" });
+          } else {
+            throw new Error("Not Authorized");
+          }
+        } catch (error) {
+          res.json({ error });
+        }
+      };
+      updatePost();
+    }
+  })(req, res);
+};

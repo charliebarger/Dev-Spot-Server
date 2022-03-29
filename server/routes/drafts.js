@@ -20,7 +20,7 @@ router.post(
 );
 
 //PUT edit draft
-router.put("/update/:id", postController.updatePost);
+router.put("/update/:id", draftController.updateDraft);
 
 //DELETE single draft
 router.delete("/delete/:id", postController.deletePost);

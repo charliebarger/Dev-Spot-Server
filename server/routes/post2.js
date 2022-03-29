@@ -12,7 +12,7 @@ router.post(
   postController.checkFormValidity,
   postController.validatePost(),
   validationController.checkFormForErrors,
-  postController.creatIt
+  postController.createPost
 );
 
 //GET all post

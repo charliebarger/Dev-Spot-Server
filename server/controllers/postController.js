@@ -8,7 +8,7 @@ ExtractJwt = require("passport-jwt").ExtractJwt;
 const passport = require("passport");
 /* POST login. */
 
-exports.creatIt = (req, res) => {
+exports.createPost = (req, res) => {
   console.log("post here blahhh");
   console.log(req.url);
   const draft = req.url.includes("draft");
@@ -158,7 +158,7 @@ exports.updatePost = async (req, res, next) => {
                 timestamp: Date.now(),
               },
             });
-            res.json({ post: updated });
+            res.json({ post: "updated" });
           } else {
             throw new Error("Not Authorized");
           }
