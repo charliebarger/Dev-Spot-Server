@@ -61,19 +61,46 @@ exports.updatePost = async (req, res, next) => {
 };
 
 //Delete Comment if user is author
-exports.deleteComment = async (req, res, next) => {
-  console.log(req.params.commentId);
-  try {
-    await commentDb.findByIdAndDelete(req.params.commentId);
-    res.json({ post: "deleted" });
-  } catch (error) {
-    next(error);
-  }
-};
+// exports.deleteComment = async (req, res, next) => {
+//   console.log(req.params.commentId);
+//   try {
+//     await commentDb.findByIdAndDelete(req.params.commentId);
+//     res.json({ post: "deleted" });
+//   } catch (error) {
+//     next(error);
+//   }
+// };
 
 //Express Validator (Form Vaidation)
 
 //Validate comments
 exports.validateComment = () => {
   return check("comment", "title is required").notEmpty().isString().trim();
+};
+
+exports.deleteComment = (req, res, next) => {
+  passport.authenticate("jwt", { session: false }, (err, user) => {
+    if (err || !user) {
+      return res.status(401).json({
+        error: err[1].msg,
+      });
+    } else {
+      (async () => {
+        try {
+          const data = await commentDb
+            .findById(req.params.commentId)
+            .populate("user");
+          const author = data.user._id;
+          if (author == user.id) {
+            await commentDb.findByIdAndDelete(req.params.commentId);
+            res.json({ status: "deleted" });
+          } else {
+            throw new Error("Not Authorized");
+          }
+        } catch (error) {
+          res.status(401).send(error);
+        }
+      })();
+    }
+  })(req, res);
 };

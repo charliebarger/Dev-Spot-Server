@@ -7,8 +7,10 @@ const draftController = require("../controllers/draftController");
 //GET all drafts
 router.get("/myDrafts", draftController.getDraftsByUser);
 
+router.get("/edit/:id", draftController.editDraft);
+
 //GET single draft
-router.get("/:id", postController.getSingleDraft);
+router.get("/:id", draftController.getSingleDraft);
 
 //POST draft
 router.post(

@@ -219,3 +219,34 @@ exports.getPostsByUser = (req, res) => {
     }
   })(req, res);
 };
+
+exports.editPost = async (req, res, next) => {
+  console.log("hi");
+  passport.authenticate("jwt", { session: false }, (err, user) => {
+    console.log(err, user);
+    if (err || !user) {
+      console.log("error alert");
+      return res.json({
+        error: err[0].msg,
+      });
+    } else {
+      console.log("updating pist");
+      const updatePost = async () => {
+        try {
+          console.log("in da func");
+          const post = await postDb.findById(req.params.id).populate("user");
+          const author = post.user.id;
+          console.log(author, user.id);
+          if (author == user.id) {
+            res.json({ post });
+          } else {
+            throw new Error("Not Authorized");
+          }
+        } catch (error) {
+          res.json({ error });
+        }
+      };
+      updatePost();
+    }
+  })(req, res);
+};

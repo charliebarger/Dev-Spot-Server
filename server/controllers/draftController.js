@@ -16,7 +16,9 @@ exports.getDraftsByUser = (req, res) => {
     } else {
       try {
         const getDrafts = async () => {
-          const drafts = await draftDb.find({ user: user.id });
+          const drafts = await draftDb
+            .find({ user: user.id })
+            .sort({ timestamp: -1 });
           res.json({ drafts });
         };
         getDrafts();
@@ -56,6 +58,37 @@ exports.createDraft = (req, res) => {
   })(req, res);
 };
 
+exports.editDraft = async (req, res, next) => {
+  console.log("hi");
+  passport.authenticate("jwt", { session: false }, (err, user) => {
+    console.log(err, user);
+    if (err || !user) {
+      console.log("error alert");
+      return res.status(401).json({
+        error: err[1].msg,
+      });
+    } else {
+      console.log("updating pist");
+      const updatePost = async () => {
+        try {
+          console.log("in da func");
+          const post = await draftDb.findById(req.params.id).populate("user");
+          const author = post.user.id;
+          console.log(author, user.id);
+          if (author == user.id) {
+            res.json({ post });
+          } else {
+            throw new Error("Not Authorized");
+          }
+        } catch (error) {
+          res.json({ error });
+        }
+      };
+      updatePost();
+    }
+  })(req, res);
+};
+
 exports.updateDraft = async (req, res, next) => {
   passport.authenticate("jwt", { session: false }, (err, user) => {
     if (err || !user) {
@@ -91,4 +124,16 @@ exports.updateDraft = async (req, res, next) => {
       updatePost();
     }
   })(req, res);
+};
+
+exports.getSingleDraft = async (req, res, next) => {
+  try {
+    const post = await draftDb
+      .findById(ObjectId(req.params.id))
+      .populate("user");
+    res.json({ post });
+  } catch (error) {
+    console.log(error);
+    next(error);
+  }
 };

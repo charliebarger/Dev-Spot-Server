@@ -24,6 +24,8 @@ router.put("/draft/update/:id", postController.updatePost);
 //GET all post
 router.get("/myPosts", postController.getPostsByUser);
 
+router.get("/edit/:id", postController.editPost);
+
 //GET single post
 router.get("/:id", postController.getSinglePost);
 
