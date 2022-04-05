@@ -92,7 +92,6 @@ exports.logIn = (req, res) => {
 
 exports.getDashboard = (req, res) => {
   passport.authenticate("jwt", { session: false }, (err, user) => {
-    console.log(err, user);
     if (err || !user) {
       return res.status(401).json({
         error: err[1].msg,
@@ -175,8 +174,6 @@ exports.getUserInfo = (req, res) => {
         error: err[1].msg,
       });
     } else {
-      console.log("here");
-      console.log(user);
       res.json({ user });
     }
   })(req, res);

@@ -56,22 +56,16 @@ exports.createDraft = (req, res) => {
 };
 
 exports.editDraft = async (req, res, next) => {
-  console.log("hi");
   passport.authenticate("jwt", { session: false }, (err, user) => {
-    console.log(err, user);
     if (err || !user) {
-      console.log("error alert");
       return res.status(401).json({
         error: err[1].msg,
       });
     } else {
-      console.log("updating pist");
       const updatePost = async () => {
         try {
-          console.log("in da func");
           const post = await draftDb.findById(req.params.id).populate("user");
           const author = post.user.id;
-          console.log(author, user.id);
           if (author == user.id) {
             res.json({ post });
           } else {
@@ -99,8 +93,6 @@ exports.updateDraft = async (req, res, next) => {
             .findById(req.params.id)
             .populate("user");
           const author = article.user.id;
-          console.log(author);
-          console.log(user.id);
           if (author == user.id) {
             await draftDb.findByIdAndUpdate(ObjectId(req.params.id), {
               $set: {

@@ -8,8 +8,6 @@ const passport = require("passport");
 /* POST login. */
 
 exports.createPost = (req, res) => {
-  console.log("post here blahhh");
-  console.log(req.url);
   passport.authenticate("jwt", { session: false }, (err, user) => {
     if (err || !user) {
       return res.status(401).json({
@@ -46,7 +44,6 @@ const sanitizePostBody = (req, body, next) => {
       : "";
     next();
   } catch (error) {
-    console.log("sanitize error");
     next(error);
   }
 };
@@ -122,7 +119,6 @@ exports.updatePost = async (req, res, next) => {
           const article = await postDb.findById(req.params.id).populate("user");
           const author = article.user.id;
           if (author == user.id) {
-            console.log("ok were gunna call it!");
             await postDb.findByIdAndUpdate(ObjectId(req.params.id), {
               $set: {
                 title: req.body.title,
@@ -171,7 +167,6 @@ exports.deletePost = (req, res, next) => {
 };
 
 exports.getPostsByUser = (req, res) => {
-  console.log("reached post by user");
   passport.authenticate("jwt", { session: false }, (err, user) => {
     if (err || !user) {
       return res.status(401).json({
@@ -192,22 +187,16 @@ exports.getPostsByUser = (req, res) => {
 };
 
 exports.editPost = async (req, res, next) => {
-  console.log("hi");
   passport.authenticate("jwt", { session: false }, (err, user) => {
-    console.log(err, user);
     if (err || !user) {
-      console.log("error alert");
       return res.json({
         error: err[0].msg,
       });
     } else {
-      console.log("updating pist");
       const updatePost = async () => {
         try {
-          console.log("in da func");
           const post = await postDb.findById(req.params.id).populate("user");
           const author = post.user.id;
-          console.log(author, user.id);
           if (author == user.id) {
             res.json({ post });
           } else {
