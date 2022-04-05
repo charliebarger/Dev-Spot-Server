@@ -30,7 +30,6 @@ exports.getDraftsByUser = (req, res) => {
 };
 
 exports.createDraft = (req, res) => {
-  console.log("at create draft");
   passport.authenticate("jwt", { session: false }, (err, user) => {
     if (err || !user) {
       return res.status(401).json({
@@ -46,10 +45,8 @@ exports.createDraft = (req, res) => {
             imageUrl: req.body.imageUrl,
           });
           await draftDb.create(post);
-          console.log("Success!!");
           return res.status(200).send({ status: "post added" });
         } catch (error) {
-          console.log("Failure!!");
           return res.json(error);
         }
       };

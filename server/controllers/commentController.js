@@ -60,17 +60,6 @@ exports.updatePost = async (req, res, next) => {
   }
 };
 
-//Delete Comment if user is author
-// exports.deleteComment = async (req, res, next) => {
-//   console.log(req.params.commentId);
-//   try {
-//     await commentDb.findByIdAndDelete(req.params.commentId);
-//     res.json({ post: "deleted" });
-//   } catch (error) {
-//     next(error);
-//   }
-// };
-
 //Express Validator (Form Vaidation)
 
 //Validate comments
