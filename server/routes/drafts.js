@@ -25,6 +25,6 @@ router.post(
 router.put("/update/:id", draftController.updateDraft);
 
 //DELETE single draft
-router.delete("/delete/:id", postController.deletePost);
+router.delete("/delete/:id", draftController.deleteDraft);
 
 module.exports = router;

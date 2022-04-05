@@ -126,6 +126,34 @@ exports.updateDraft = async (req, res, next) => {
   })(req, res);
 };
 
+exports.deleteDraft = (req, res, next) => {
+  passport.authenticate("jwt", { session: false }, (err, user) => {
+    if (err || !user) {
+      return res.status(401).json({
+        error: err[1].msg,
+      });
+    } else {
+      const deleteDraft = async () => {
+        try {
+          const article = await draftDb
+            .findById(req.params.id)
+            .populate("user");
+          const author = article.user.id;
+          if (author == user.id) {
+            await draftDb.findByIdAndDelete(req.params.id);
+            res.json({ status: "deleted" });
+          } else {
+            throw new Error("Not Authorized");
+          }
+        } catch (error) {
+          res.status(401).send(error);
+        }
+      };
+      deleteDraft();
+    }
+  })(req, res);
+};
+
 exports.getSingleDraft = async (req, res, next) => {
   try {
     const post = await draftDb

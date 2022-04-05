@@ -18,43 +18,20 @@ router.post(
 //PUT edit post
 router.put("/update/:id", postController.updatePost);
 
-//PUT edit draft
-router.put("/draft/update/:id", postController.updatePost);
-
 //GET all post
 router.get("/myPosts", postController.getPostsByUser);
 
+////PUT edit post
 router.get("/edit/:id", postController.editPost);
 
 //GET single post
 router.get("/:id", postController.getSinglePost);
 
-//Get single draft
-router.get("/draft/:id", postController.getSingleDraft);
-
 //GET all post
 router.get("/", postController.getAllPosts);
 
-//PUT edit post
-router.put("/:id/edit", postController.updatePost);
-
 //DELETE post
 router.delete("/delete/:id", postController.deletePost);
-
-router.delete("/draft/delete/:id", postController.deletePost);
-
-// POST save draft
-router.post(
-  "/draft",
-  (req, res, next) => {
-    console.log("proper route");
-    next();
-  },
-  postController.sanitizePostBody,
-  postController.validateDraft(),
-  validationController.checkFormForErrors,
-  postController.createPost
-);
 
 //comment routes
 
@@ -68,9 +45,6 @@ router.post(
   validationController.checkFormForErrors,
   commentController.createComment
 );
-
-//PUT edit a comment (currently not allowed)
-// router.put("/:postId/comments/:commentId");
 
 //PUT delete a comment
 router.delete("/comments/:commentId/delete", commentController.deleteComment);

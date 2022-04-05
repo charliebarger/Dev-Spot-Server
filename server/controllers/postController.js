@@ -1,5 +1,4 @@
 const postDb = require("../models/postModel");
-const draftDb = require("../models/draftModel");
 const { check } = require("express-validator");
 const ObjectId = require("mongodb").ObjectId;
 const sanitizeHtml = require("sanitize-html");
@@ -11,23 +10,21 @@ const passport = require("passport");
 exports.createPost = (req, res) => {
   console.log("post here blahhh");
   console.log(req.url);
-  const draft = req.url.includes("draft");
   passport.authenticate("jwt", { session: false }, (err, user) => {
     if (err || !user) {
       return res.status(401).json({
         error: err[1].msg,
       });
     } else {
-      const pickDb = draft ? draftDb : postDb;
       const addToDB = async () => {
         try {
-          const post = await pickDb({
+          const post = await postDb({
             user: user._id,
             title: req.body.title,
             body: req.body.postBody,
             imageUrl: req.body.imageUrl,
           });
-          await pickDb.create(post);
+          await postDb.create(post);
           return res.status(200).send({ status: "post added" });
         } catch (error) {
           return res.json(error);
@@ -99,18 +96,6 @@ exports.getSinglePost = async (req, res, next) => {
   }
 };
 
-exports.getSingleDraft = async (req, res, next) => {
-  try {
-    const post = await draftDb
-      .findById(ObjectId(req.params.id))
-      .populate("user");
-    res.json({ post });
-  } catch (error) {
-    console.log(error);
-    next(error);
-  }
-};
-
 //get all posts
 exports.getAllPosts = async (req, res, next) => {
   try {
@@ -126,26 +111,19 @@ exports.getAllPosts = async (req, res, next) => {
 
 //update post
 exports.updatePost = async (req, res, next) => {
-  console.log("here at update post");
-  const draft = req.url.includes("draft");
-  console.log(draft);
   passport.authenticate("jwt", { session: false }, (err, user) => {
     if (err || !user) {
       return res.status(401).json({
         error: err[1].msg,
       });
     } else {
-      console.log(req.body);
-      const pickDb = draft ? draftDb : postDb;
       const updatePost = async () => {
         try {
-          const article = await pickDb.findById(req.params.id).populate("user");
+          const article = await postDb.findById(req.params.id).populate("user");
           const author = article.user.id;
-          console.log(author);
-          console.log(user.id);
           if (author == user.id) {
             console.log("ok were gunna call it!");
-            await pickDb.findByIdAndUpdate(ObjectId(req.params.id), {
+            await postDb.findByIdAndUpdate(ObjectId(req.params.id), {
               $set: {
                 title: req.body.title,
                 body: req.body.postBody,
@@ -175,12 +153,10 @@ exports.deletePost = (req, res, next) => {
     } else {
       const deletePost = async () => {
         try {
-          const draft = req.url.includes("draft");
-          const pickDb = draft ? draftDb : postDb;
-          const article = await pickDb.findById(req.params.id).populate("user");
+          const article = await postDb.findById(req.params.id).populate("user");
           const author = article.user.id;
           if (author == user.id) {
-            await pickDb.findByIdAndDelete(req.params.id);
+            await postDb.findByIdAndDelete(req.params.id);
             res.json({ status: "deleted" });
           } else {
             throw new Error("Not Authorized");
