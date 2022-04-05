@@ -56,15 +56,10 @@ const sanitizePostBody = (req, body, next) => {
 
 exports.sanitizePostBody = sanitizePostBody;
 
-const checkUrl = (req, res, next) => {
-  if (req.body.imageUrl == "") {
-    req.body.imageUrl = "https://i.imgur.com/gT6nqAf.png";
-  }
-  next();
-};
-
 const checkImg = async (req, res, next) => {
-  const image = req.body.imageUrl.match(/(jpeg|jpg|gif|png)/) != null;
+  const image =
+    req.body.imageUrl.match(/(jpeg|jpg|gif|png)/) != null ||
+    req.body.imageUrl === "";
   if (image) {
     next();
   } else {
@@ -72,7 +67,7 @@ const checkImg = async (req, res, next) => {
   }
 };
 
-exports.checkFormValidity = [sanitizePostBody, checkUrl, checkImg];
+exports.checkFormValidity = [sanitizePostBody, checkImg];
 
 //validate messages
 exports.validatePost = () => {
