@@ -1,12 +1,12 @@
 # Dev Spot (Server side)
 
-## Check out the [Server Client Code](https://github.com/charliebarger/Dev-Spot-Client1)
+## Check out the [Client Code](https://github.com/charliebarger/Dev-Spot-Client1)
 
 ## Description
 
 A tech-centric blog site that allows users to create articles, save drafts, and read and comment on published articles.
 
-> See it Live at [https://charliebarger.github.io/Dev-Spot-Client1/](https://charliebarger.github.io/Dev-Spot-Client1/)
+> See it Live at [https://charliebarger.github.io/dev-spot-client/](https://charliebarger.github.io/dev-spot-client/)
 
 ## Demo
 
