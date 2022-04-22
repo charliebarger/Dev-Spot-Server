@@ -1,6 +1,6 @@
 # Dev Spot (Server side)
 
-## Check out the [Client Code](https://github.com/charliebarger/Dev-Spot-Client1)
+## Check out the [Client Side Code](https://github.com/charliebarger/Dev-Spot-Client1)
 
 ## Description
 
